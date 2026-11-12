@@ -3260,7 +3260,7 @@ body.fx-covered #tags { visibility: hidden; }
 
 </style>
 <style>/* css/audio.css */
-/* 花現花蓮 - 改變進行式｜風格實驗版・聲音 (CONTRACT_AUDIO §4). The switcher 「聲音：全開／音效／關」 (#sndSw, js/audio_glue.js)
+/* 花現花蓮 - 改變進行式｜風格實驗版・聲音 (CONTRACT_AUDIO §4). The switcher 「聲音：全開／音樂／音效／關」 (#sndSw, js/audio_glue.js)
  * uses the classes of the style / 轉場 switchers (.jh-style …), so a style's own look of them (css/style_cosmic.css)
  * applies as is. Its place follows the 轉場 switcher (css/fx.css):
  *   · wide layouts (821 px and up, not phones; from 2026-11-11): a square of the dock at the bottom right, after 轉場
@@ -3280,6 +3280,11 @@ body.fx-covered #tags { visibility: hidden; }
 .jh-snd-ic .s { fill: currentColor; }
 .jh-snd-ic .w1, .jh-snd-ic .w2, .jh-snd-ic .x { fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; }
 .jh-snd-ic .x { display: none; }
+/* 音樂 (the music only): a note where the waves are */
+.jh-snd-ic .n { display: none; fill: var(--pink); }
+.jh-snd-ic .nf { display: none; fill: none; stroke: var(--pink); stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+.jh-snd-ic[data-snd="music"] .w1, .jh-snd-ic[data-snd="music"] .w2 { display: none; }
+.jh-snd-ic[data-snd="music"] .n, .jh-snd-ic[data-snd="music"] .nf { display: block; }
 .jh-snd-ic[data-snd="all"] { background: var(--yellow); }
 .jh-snd-ic[data-snd="all"] .w2 { stroke: var(--pink); stroke-width: 2; }
 .jh-snd-ic[data-snd="sfx"] .w2 { display: none; }
@@ -3291,6 +3296,8 @@ body.fx-covered #tags { visibility: hidden; }
 .jh-snd[data-locked] .jh-snd-btn .jh-snd-ic { background: var(--white); }
 .jh-snd[data-locked] .jh-snd-btn .jh-snd-ic .s { fill: var(--g5); }
 .jh-snd[data-locked] .jh-snd-btn .jh-snd-ic .w1, .jh-snd[data-locked] .jh-snd-btn .jh-snd-ic .w2 { stroke: var(--g5); stroke-width: 1.5; stroke-dasharray: 1.4 1.7; }
+.jh-snd[data-locked] .jh-snd-btn .jh-snd-ic .n { fill: var(--g5); }
+.jh-snd[data-locked] .jh-snd-btn .jh-snd-ic .nf { stroke: var(--g5); }
 
 /* always the compact form (a button + a drop-down), like 轉場 */
 .jh-style.jh-snd .jh-style-lab { display: none; }
@@ -3314,6 +3321,21 @@ body.fx-covered #tags { visibility: hidden; }
   .jh-snd-opts { flex: 0 0 132px; }
   .jh-snd-credit { flex: 1 1 0; min-width: 0; border-top: 0; border-left: 2px solid var(--black); }
 }
+
+/* LED wall mode (js/ui.js body.is-wall, ?wall=2.5): the dock is in the operator's strip under the line the wall shows, and with
+   four modes the stacked menu (the options over the credit) would rise into the band (1920 × 1080: up to row 729, the line at
+   768), and with the credit beside the options (182 px, as tall as the four) it still did in a window (the line estimated at
+   668: from row 666, or 658 over a 48 px taskbar) where the 風格 and 轉場 menus stay under it. There the four options are one
+   row (44 px, as tall as ever) over the credit: 107 px, lower than the 轉場 menu (138 px), so it stays under the line wherever
+   that one does (1920 × 1080: from row 881). Outside wall mode nothing changes */
+body.is-wall #dock #sndSw .jh-style-menu { width: min(348px, calc(100vw - 18px)); }
+body.is-wall #dock #sndSw.is-open .jh-style-menu { flex-direction: column; }
+body.is-wall #dock #sndSw .jh-snd-opts { flex: none; flex-direction: row; }
+body.is-wall #dock #sndSw .jh-style-opt { flex: 1 1 0; min-width: 0; justify-content: center; padding: 0 8px; }
+body.is-wall #dock #sndSw .jh-style-opt + .jh-style-opt { border-top: 0; border-left: 2px solid var(--black); }
+body.is-wall #dock #sndSw .jh-snd-credit { flex: none; border-left: 0; border-top: 2px solid var(--black); }
+[data-style="cosmic"] body.is-wall #dock #sndSw .jh-style-opt + .jh-style-opt,
+[data-style="cosmic"] body.is-wall #dock #sndSw .jh-snd-credit { border-color: var(--cz-ink, #231F20); }
 
 /* phones: under the floating style and 轉場 buttons */
 @media (max-width: 820px), (max-height: 500px), (pointer: coarse) and (orientation: portrait) and (max-width: 1024px) {
@@ -3408,7 +3430,7 @@ body.fx-covered #tags { visibility: hidden; }
   <nav class="jh-crumb" id="crumb" aria-label="目前位置"></nav>
   <div class="jh-style" id="styleSw" hidden><!-- style switcher (HL.style.mountSwitcher) --></div>
   <div class="jh-style jh-fx" id="fxSw" hidden><!-- transition switcher 轉場：浮誇／簡潔／關 (HL.fx, js/fxkit.js) --></div>
-  <div class="jh-style jh-snd" id="sndSw" hidden><!-- sound switcher 聲音：全開／音效／關 (HL.audio: js/audiokit.js, js/audio_glue.js) --></div>
+  <div class="jh-style jh-snd" id="sndSw" hidden><!-- sound switcher 聲音：全開／音樂／音效／關 (HL.audio: js/audiokit.js, js/audio_glue.js) --></div>
   <button type="button" class="jh-home" id="homeBtn" hidden title="回到全館總覽" aria-label="回到全館總覽"><span data-icon="home"></span><span class="jh-home-t">全館總覽</span><span class="jh-home-k" aria-hidden="true">總覽</span></button>
 </header>
 
@@ -31323,6 +31345,19 @@ window.HL_AUDIO_DATA = {"cues":{"_doc":"引擎發語意 cue，依目前風格查
  *   - Nothing about the assets is written here: ids, gains, fades, limits and loop points all come from audio/cues.json
  *     and audio/bgm/manifest.json, so re-rendered assets need no code change.
  *
+ * Modes (MODES; the 聲音 switcher of js/audio_glue.js, ?sound=, localStorage 'hl-sound'; default 'all')
+ *   - 'all' 全開 = sound effects + BGM; 'music' 音樂 = the BGM only; 'sfx' 音效 = the sound effects only; 'off' 關 = nothing
+ *     (no AudioContext until a pick). An unknown ?sound= / stored value is ignored (next source, else the default).
+ *   - 'music': every effect is dropped as under 'off' — play() → null, logged dropped 'mode', nothing scheduled — and
+ *     the effects are not queued for decoding at load (as 'sfx' leaves the BGM undecoded; a mode with effects queues
+ *     them, a style switch asks for its own as under 'off'). Its BGM is that of 'all' in every respect: the same song,
+ *     started at the first gesture with its fade-in, ducked under cards (synced ducks wait for a running clock as under
+ *     'all': clockReady), the same hand-over on a style switch, paused while the tab is hidden.
+ *   - Between modes (setMode, bgmSync): when the effects go (→ 音樂, → 關) those not started are dropped and those sounding
+ *     fade out over _web.mode_fade_off_s ('mode'); when the BGM goes it fades out over mode_fade_sfx_s (→ 音效: the
+ *     master stays up) or with the master over mode_fade_off_s (→ 關), and the next start resumes from that point with
+ *     bgm_fade_in_s (→ 全開 / 音樂). 全開 ↔ 音樂 leave the BGM running: no restart, no fade.
+ *
  * Signal chain
  *   sfx voice: BufferSource (from the first sample above _policy.mp3_lead_trim_db) [→ splitter → merger: L↔R] → gain
  *              → sfxBus (_web.sfx_gain_db) → limiter
@@ -31367,7 +31402,7 @@ window.HL_AUDIO_DATA = {"cues":{"_doc":"引擎發語意 cue，依目前風格查
  *     started inside the gesture.
  *   - iOS audio session (navigator.audioSession, Safari 16.4+; feature-detected, a no-op elsewhere). By default the page
  *     follows the ring / silent switch and mixes with other apps' audio: type 'ambient', set at load (before the first
- *     gesture's unlock). Only the visitor's own pick of 全開 or 音效 in the 聲音 switcher (setMode(m, {explicit: true}),
+ *     gesture's unlock). Only the visitor's own pick of 全開, 音樂 or 音效 in the 聲音 switcher (setMode(m, {explicit: true}),
  *     js/audio_glue.js — re-picking the mode already in effect counts too) switches it to 'playback': it then sounds
  *     with the switch on silent and may pause other apps' audio, the visitor's choice. Picking 關 (any 'off') → 'ambient'.
  *     A stored mode counts as such a pick only when the switcher wrote it (localStorage 'hl-sound-pick' = '1' next to
@@ -31395,8 +31430,11 @@ window.HL_AUDIO_DATA = {"cues":{"_doc":"引擎發語意 cue，依目前風格查
   const HL = (window.HL = window.HL || {});
   if (HL.audio) return;
 
-  const MODES = ['all', 'sfx', 'off'];
-  const MODE_LABEL = { all: '全開', sfx: '音效', off: '關' };
+  const MODES = ['all', 'music', 'sfx', 'off'];   // (the 聲音 switcher's order: 全開／音樂／音效／關; header, Modes)
+  const MODE_LABEL = { all: '全開', music: '音樂', sfx: '音效', off: '關' };
+  /** what a mode lets sound: the BGM (全開, 音樂) and the sound effects (全開, 音效) */
+  const withBgm = (m) => m === 'all' || m === 'music';
+  const withSfx = (m) => m === 'all' || m === 'sfx';
   const LS_KEY = 'hl-sound';
   const LS_PICK = 'hl-sound-pick';   // '1' = the stored mode was the visitor's own pick in the 聲音 switcher (iOS session, header)
   /** CONTRACT_AUDIO §4: what may sound under the transition modes (fx=off; fx=lite or reduced motion) */
@@ -31493,7 +31531,7 @@ window.HL_AUDIO_DATA = {"cues":{"_doc":"引擎發語意 cue，依目前風格查
   let unlocked = false, begun = false, styleChosen = false, gestured = false;
   const init0 = readMode();
   let mode = init0.mode;
-  let explicit = init0.explicit;   // the mode in effect is the visitor's own pick of 全開 / 音效 (iOS 'playback' session)
+  let explicit = init0.explicit;   // the mode in effect is the visitor's own pick of 全開 / 音樂 / 音效 (iOS 'playback' session)
   let style = guessStyle();
   const B = new Map();             // asset key → {key, kind, id|style, state: new|loading|ready|failed, buf, lead, dur, prio, seq, waiters}
   const jobs = [];
@@ -31524,7 +31562,7 @@ window.HL_AUDIO_DATA = {"cues":{"_doc":"引擎發語意 cue，依目前風格查
   const errPush = (x) => { errors.push(x); if (errors.length > ERR_MAX) errors.splice(0, errors.length - ERR_MAX); };
 
   // ================================================================ mode + style
-  /** → {mode, src: url | stored | default, explicit}: explicit = a stored pick of 全開 / 音效 made in the switcher (the
+  /** → {mode, src: url | stored | default, explicit}: explicit = a stored pick of 全開 / 音樂 / 音效 made in the switcher (the
    *  default and ?sound= never count; ?sound= agreeing with such a pick keeps it) */
   function readMode() {
     let q = null, st = null, pk = null;
@@ -31622,16 +31660,19 @@ window.HL_AUDIO_DATA = {"cues":{"_doc":"引擎發語意 cue，依目前風格查
       bgmSync();
     }).catch((e) => disable('load: ' + (e && e.message || e)));
   }
-  /** queue every SFX: the current style first, then the others; BGM when the mode wants it */
+  /** queue what the mode sounds: every SFX when it has effects, the BGM when it has music */
   function queueAll() {
     if (status !== 'ready') return;
-    if (!queueOn) {
-      queueOn = true;
-      const all = styleList(), cur = all.includes(style) ? style : all[0];
-      [cur].concat(all.filter((s) => s !== cur)).forEach((s, i) => idsOf(s).forEach((id) => want(sfxKey(id), { kind: 'sfx', id }, i === 0 ? 1 : 3)));
-    }
-    if (mode === 'all') queueBgm(false);
+    if (withSfx(mode)) queueSfx();
+    if (withBgm(mode)) queueBgm(false);
     pump();
+  }
+  /** every SFX once: the current style first, then the others */
+  function queueSfx() {
+    if (queueOn) return;
+    queueOn = true;
+    const all = styleList(), cur = all.includes(style) ? style : all[0];
+    [cur].concat(all.filter((s) => s !== cur)).forEach((s, i) => idsOf(s).forEach((id) => want(sfxKey(id), { kind: 'sfx', id }, i === 0 ? 1 : 3)));
   }
   function queueBgm(all) {
     if (bgmQueued && !all) return;
@@ -31783,7 +31824,8 @@ window.HL_AUDIO_DATA = {"cues":{"_doc":"引擎發語意 cue，依目前風格查
     return Math.min(c + CLK_JUMP, Math.max(c, p + clk.off));
   }
   /** the clock of a context play() would plan against can be trusted (Timing, header); true where play() would not plan
-   *  at all (no context, sound off, hidden: it drops the cue) */
+   *  at all (no context, sound off, hidden: it drops the cue). Under 'music' play() drops every cue too, but a synced duck
+   *  still plans against this clock: it waits for it as under 'all' (header, Modes) */
   function clockUp() {
     if (!ctx || !unlocked || mode === 'off' || status !== 'ready' || isHidden()) return true;
     const c = ctx.currentTime;
@@ -31810,7 +31852,7 @@ window.HL_AUDIO_DATA = {"cues":{"_doc":"引擎發語意 cue，依目前風格查
     return Math.max(0, Math.min(SYNC_MAX, L - Math.max(0, Math.min(0.1, f))));
   }
   /** iOS audio session (header): 'ambient' (follows the ring / silent switch, mixes with other apps) unless the visitor
-   *  picked 全開 / 音效 in the switcher → 'playback' */
+   *  picked 全開 / 音樂 / 音效 in the switcher → 'playback' */
   function session() {
     safe(() => { const s = navigator.audioSession; if (s && 'type' in s) { const t = explicit && mode !== 'off' ? 'playback' : 'ambient'; if (s.type !== t) s.type = t; } });
   }
@@ -31925,7 +31967,8 @@ window.HL_AUDIO_DATA = {"cues":{"_doc":"引擎發語意 cue，依目前風格查
     }
   }
   /** o: {persist (localStorage), url (rewrite ?sound= when present), explicit: true = the visitor picked it in the 聲音
-   *  switcher (iOS 'playback' session for 全開 / 音效), false = a pick of 關; left out = set from code (keeps it, 'off' ends it)} */
+   *  switcher (iOS 'playback' session for 全開 / 音樂 / 音效), false = a pick of 關; left out = set from code (keeps it, 'off' ends it)}.
+   *  The fades between the modes: header, Modes */
   function setMode(m, o) {
     o = Object.assign({ persist: true, url: true }, o);
     if (!MODES.includes(m)) return mode;
@@ -31958,6 +32001,9 @@ window.HL_AUDIO_DATA = {"cues":{"_doc":"引擎發語意 cue，依目前風格查
       } else {
         if (shouldRun()) resume();
         masterF.fade(1, 0.05, 'lin');
+        // → 音樂 (from 全開 / 音效): the effects go as under 關 — not started: dropped, sounding: faded out — while the master
+        // stays up for the BGM (bgmSync below: 全開 → 音樂 leaves it running, 音效 → 音樂 fades it in)
+        if (!withSfx(m)) cancelAll(webn('mode_fade_off_s') * 1000, 'mode');
       }
     }
     if (m !== 'off') queueAll();
@@ -32031,8 +32077,8 @@ window.HL_AUDIO_DATA = {"cues":{"_doc":"引擎發語意 cue，依目前風格查
     if (v.done) return;
     const now = ctx.currentTime;
     if (v.start <= now + 0.003) cut(v, now, fadeMs, why || 'cancel');
-    // a UI sound "now" is only LATE_PAD ahead of the clock: as good as started. The click_off that confirms 關 is committed
-    // right before setMode('off') gets here: it sounds, fading with the mode from its own start
+    // a UI sound "now" is only LATE_PAD ahead of the clock: as good as started. The click_off that confirms 關 / 音樂 is
+    // committed right before setMode('off' / 'music') gets here: it sounds, fading with the mode from its own start
     else if (why === 'mode' && v.now0) cut(v, v.start + 0.001, fadeMs, why);
     else { v.E.dropped = why || 'cancel'; v.killed = true; kill(v); }
   }
@@ -32053,7 +32099,7 @@ window.HL_AUDIO_DATA = {"cues":{"_doc":"引擎發語意 cue，依目前風格查
     E.at = E.t + when * 1000;
     try {
       if (status !== 'ready') return drop(E, status === 'disabled' ? 'disabled' : 'loading');
-      if (mode === 'off') return drop(E, 'mode');
+      if (!withSfx(mode)) return drop(E, 'mode');   // 關, 音樂: no effect at all (header, Modes)
       const allow = filterFor();
       if (allow && !allowedCue(cue, allow)) return drop(E, 'filter');
       if (!unlocked || !ctx) return drop(E, 'locked');
@@ -32195,7 +32241,7 @@ window.HL_AUDIO_DATA = {"cues":{"_doc":"引擎發語意 cue，依目前風格查
   /** make what is heard match style + mode */
   function bgmSync() {
     if (!ctx || !N || !unlocked || status !== 'ready') return;
-    const k0 = bgmOf(style), want0 = mode === 'all' && MAN && MAN[k0] ? k0 : null;
+    const k0 = bgmOf(style), want0 = withBgm(mode) && MAN && MAN[k0] ? k0 : null;
     if (track && track.style !== want0) {
       if (!want0) {
         stopTrack(track, mode === 'off' ? webn('mode_fade_off_s') : webn('mode_fade_sfx_s'), 'sq', true);
@@ -32233,7 +32279,7 @@ window.HL_AUDIO_DATA = {"cues":{"_doc":"引擎發語意 cue，依目前風格查
     }
     if (status === 'ready') {
       idsOf(s).forEach((id) => want(sfxKey(id), { kind: 'sfx', id }, 1));
-      if (mode === 'all' && MAN[b1]) want(bgmKey(b1), { kind: 'bgm', style: b1 }, 0);
+      if (withBgm(mode) && MAN[b1]) want(bgmKey(b1), { kind: 'bgm', style: b1 }, 0);
     }
     bgmSync();
     emit('style', { style: s, prev });
@@ -32455,7 +32501,7 @@ window.HL_AUDIO_DATA = {"cues":{"_doc":"引擎發語意 cue，依目前風格查
     get mode() { return mode; },
     set mode(m) { setMode(m); },
     modeSource: init0.src,
-    /** the mode in effect is the visitor's own pick of 全開 / 音效 in the switcher (iOS 'playback' session; header) */
+    /** the mode in effect is the visitor's own pick of 全開 / 音樂 / 音效 in the switcher (iOS 'playback' session; header) */
     get explicit() { return explicit; },
     get unlocked() { return unlocked; },
     get style() { return style; },
@@ -32495,7 +32541,7 @@ window.HL_AUDIO_DATA = {"cues":{"_doc":"引擎發語意 cue，依目前風格查
         return ready.then(() => new Promise((res) => {
           if (status !== 'ready') { res(A.debug.state()); return; }
           keepBgm = true;
-          queueAll(); queueBgm(true); pump();
+          queueSfx(); queueAll(); queueBgm(true); pump();   // (every SFX in every mode, 'music' too)
           const t0 = performance.now();
           const chk = () => ((jobs.length || running) && performance.now() - t0 < 60000 ? setTimeout(chk, 50) : res(A.debug.state()));
           chk();
@@ -32534,7 +32580,7 @@ window.HL_AUDIO_DATA = {"cues":{"_doc":"引擎發語意 cue，依目前風格查
   };
   HL.audio = A;
   safe(() => { document.documentElement.dataset.sound = mode; });
-  session();   // iOS: 'ambient' from the start (the visitor's stored pick of 全開 / 音效: 'playback'), before any unlock
+  session();   // iOS: 'ambient' from the start (the visitor's stored pick of 全開 / 音樂 / 音效: 'playback'), before any unlock
 
   // ================================================================ boot
   GESTURES.forEach((t) => window.addEventListener(t, onGesture, { capture: true, passive: true }));
@@ -32552,15 +32598,16 @@ window.HL_AUDIO_DATA = {"cues":{"_doc":"引擎發語意 cue，依目前風格查
 </script>
 <script>/* js/audio_glue.js */
 /* 花現花蓮 - 改變進行式｜風格實驗版・聲音 (CONTRACT_AUDIO §4) — page glue for HL.audio (js/audiokit.js):
- *   · the header switcher 「聲音：全開／音效／關」 (#sndSw), built like the 轉場 switcher of js/fxkit.js (same classes,
- *     same keyboard handling, same floating column on tablets / phones: right under #fxSw, else under #mapctl);
+ *   · the header switcher 「聲音：全開／音樂／音效／關」 (#sndSw: effects + music / music only / effects only / nothing),
+ *     built like the 轉場 switcher of js/fxkit.js (same classes, same keyboard handling, same floating column on tablets /
+ *     phones: right under #fxSw, else under #mapctl);
  *     before the first gesture (the AudioContext is still locked) its icon shows a quiet "waiting" state — no prompt;
  *     a pick there is the visitor's explicit choice (iOS audio session: js/audiokit.js header); it is UI chrome for the
  *     map's tags only (data-hl-chrome="tags": never part of the camera framing);
  *   · the music credit at the foot of its menu (CC BY 3.0: visible to visitors, full text in audio/CREDITS.txt); its links
  *     open a new tab and never touch the mode;
  *   · UI clicks: `click` on the header buttons, the style / 轉場 switchers and the map controls; `click_on` / `click_off`
- *     on the sound switcher itself;
+ *     on the sound switcher itself (sound effects too: only where they sound, SW.pick — never between 音樂 and 關);
  *   · style switches need nothing here: js/audiokit.js follows HL.style's 'change' event itself (setStyle with the
  *     crossfade), and js/fxkit.js applies a switch made from the style switcher at the `style` transition's covered
  *     moment — so the BGM hand-over happens under the cover (without transitions: at the click).
@@ -32571,12 +32618,15 @@ window.HL_AUDIO_DATA = {"cues":{"_doc":"引擎發語意 cue，依目前風格查
 (function () {
   'use strict';
   const HL = window.HL = window.HL || {};
-  const MODES = ['all', 'sfx', 'off'];
-  const LABEL = { all: '全開', sfx: '音效', off: '關' };
-  const RANK = { off: 0, sfx: 1, all: 2 };
-  // the speaker glyph inside the 18 px framed box (same frame as the 轉場 icon): body + two waves + a cross for 關
+  const MODES = ['all', 'music', 'sfx', 'off'];   // the menu's order (js/audiokit.js: the same ids)
+  const LABEL = { all: '全開', music: '音樂', sfx: '音效', off: '關' };
+  const RANK = { off: 0, music: 1, sfx: 2, all: 3 };   // how much sounds (SW.pick: quieter → click_off first)
+  const FX = { all: true, sfx: true };                  // the modes whose sound effects sound: the switcher's own click is one
+  // the speaker glyph inside the 18 px framed box (same frame as the 轉場 icon): body + two waves (全開) / one wave (音效) /
+  // a note (音樂) / a cross (關) — css/audio.css shows the parts of each mode
   const ICON = '<svg viewBox="0 0 14 14" aria-hidden="true" focusable="false"><path class="s" d="M1.6 4.9h2.3L7.2 2v10L3.9 9.1H1.6z"/>' +
-    '<path class="w1" d="M9 4.9a2.6 2.6 0 0 1 0 4.2"/><path class="w2" d="M10.6 3a5 5 0 0 1 0 8"/><path class="x" d="M9.2 5.2l3.6 3.6M12.8 5.2l-3.6 3.6"/></svg>';
+    '<path class="w1" d="M9 4.9a2.6 2.6 0 0 1 0 4.2"/><path class="w2" d="M10.6 3a5 5 0 0 1 0 8"/><path class="x" d="M9.2 5.2l3.6 3.6M12.8 5.2l-3.6 3.6"/>' +
+    '<path class="n" d="M8.45 10.88a1.6 1.15 -25 1 1 2.9 -1.36a1.6 1.15 -25 1 1 -2.9 1.36z"/><path class="nf" d="M11.3 9.6V2.3c.25 1.4 2.15 1.7 2.1 3.9"/></svg>';
 
   const CREDIT = '音樂音源：FluidR3 GM（Frank Wen）／<a href="https://github.com/gleitz/midi-js-soundfonts" target="_blank" rel="noopener noreferrer">MIDI.js Soundfonts</a>，' +
     '<a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener noreferrer">CC BY 3.0</a>';
@@ -32588,7 +32638,7 @@ window.HL_AUDIO_DATA = {"cues":{"_doc":"引擎發語意 cue，依目前風格查
   const play = (cue, o) => { const a = A(); if (!a || typeof a.play !== 'function') return null; try { return a.play(cue, o); } catch (e) { return null; } };
   const modeOf = () => { const a = A(); return a && MODES.includes(a.mode) ? a.mode : 'all'; };
 
-  // ================================================================ switcher 「聲音：全開／音效／關」
+  // ================================================================ switcher 「聲音：全開／音樂／音效／關」
   const SW = {
     el: null,
     mount() {
@@ -32651,16 +32701,18 @@ window.HL_AUDIO_DATA = {"cues":{"_doc":"引擎發語意 cue，依目前風格查
       SW.render();
       SW.float();
     },
-    /** a choice from the menu: quieter → click_off while it can still sound; louder → the new mode first, then click_on.
-     *  It is the visitor's own choice (explicit): 全開 / 音效 switch iOS to the 'playback' audio session (sounds with the
-     *  ring / silent switch on silent, may pause other apps' audio), 關 back to 'ambient' — also when the mode picked is
-     *  the one already in effect (js/audiokit.js, header) */
+    /** a choice from the menu. Its confirming click is a sound effect, so it plays only where the effects sound:
+     *  quieter (全開 → 音樂 / 音效 / 關, 音效 → 音樂 / 關) → click_off while it can still sound, then the new mode; louder
+     *  (→ 全開, 音樂 / 關 → 音效) → the new mode first, then click_on; between 音樂 and 關 (no effects either side) none —
+     *  the music fading in / out answers. It is the visitor's own choice (explicit): 全開 / 音樂 / 音效 switch iOS to the
+     *  'playback' audio session (sounds with the ring / silent switch on silent, may pause other apps' audio), 關 back to
+     *  'ambient' — also when the mode picked is the one already in effect (js/audiokit.js, header) */
     pick(m) {
       const a = A(); if (!a || !MODES.includes(m)) return;
       const prev = modeOf(), ex = { explicit: m !== 'off' };
-      if (m === prev) { a.setMode(m, ex); play('click'); SW.render(); return; }
-      if (RANK[m] < RANK[prev]) { play('click_off'); a.setMode(m, ex); }
-      else { a.setMode(m, ex); play('click_on', { wait: 400 }); }   // (a first pick after 關: not decoded yet, it sounds as soon as it is)
+      if (m === prev) { a.setMode(m, ex); if (FX[m]) play('click'); SW.render(); return; }
+      if (FX[prev] && RANK[m] < RANK[prev]) { play('click_off'); a.setMode(m, ex); }
+      else { a.setMode(m, ex); if (FX[m]) play('click_on', { wait: 400 }); }   // (a first pick after 關 / 音樂: not decoded yet, it sounds as soon as it is)
       // ?sound= in the address bar follows the choice (as ?fx= does); it is only rewritten when it is there
       try { const u = new URL(location.href); if (u.searchParams.has('sound') && u.searchParams.get('sound') !== m) { u.searchParams.set('sound', m); history.replaceState(history.state, '', u.pathname + u.search + u.hash); } } catch (_) { /* file:// quirks */ }
       SW.render();
